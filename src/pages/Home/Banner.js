@@ -1,14 +1,13 @@
 import React, {Component} from 'react'
 import Dimensions from 'Dimensions'
+import Swiper from 'react-native-swiper'
 
-const {width, height} = Dimensions.get('window')
+const {width} = Dimensions.get('window')
 
 import {
-  ScrollView,
-  StyleSheet,
-  Text,
   View,
-  Image
+  Image,
+  StyleSheet
 } from 'react-native'
 
 const styles = StyleSheet.create({
@@ -23,38 +22,19 @@ const styles = StyleSheet.create({
   }
 })
 
-
 export default class Banner extends Component {
 
-  constructor (props) {
-    super(props)
-    this.getInfo = this.getInfo.bind(this)
-    this.state = {
-      items: []
-    }
-
-    this.getInfo()
-  }
-  getInfo () {
-    fetch('https://sq2.wsloan.com/api/bbsAPi.ashx?q=gethomedata')
-      .then(data => data.json())
-      .then(data => {
-        this.setState({
-          items: data.content.Banners[0].ItemList
-        })
-        console.log(data.content.Banners[0].ItemList)
-      })
-  }
   render () {
     return (
-      <ScrollView
-        style={styles.container}
+      <Swiper
         horizontal={true}
+        height={width / 2}
       >
-        {this.state.items.map(item => 
+      {this.props.items.map(item => 
           <View
             style={styles.items}
             key={item.fItemNo}
+            showsButtons={true}
           >
             <Image
               style={styles.banner}
@@ -62,7 +42,7 @@ export default class Banner extends Component {
             />
           </View>
         )}
-      </ScrollView>
+      </Swiper>
     )
   }
 }
