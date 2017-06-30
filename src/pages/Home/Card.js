@@ -21,7 +21,7 @@ const styles = StyleSheet.create({
     padding: 8
   },
   title: {
-    fontSize: 20,
+    fontSize: 18,
     fontWeight: 'bold'
   },
   text: {
@@ -33,12 +33,13 @@ const styles = StyleSheet.create({
   img: {
     marginRight: imagePadding,
     width: imageWidth,
-    height: imageWidth
+    height: imageWidth,
+    borderRadius: 8
   },
   avatar: {
     width: 32,
     height: 32,
-    borderRadius: 50
+    borderRadius: 16
   },
   row: {
     flex: 1,
@@ -48,7 +49,7 @@ const styles = StyleSheet.create({
     marginTop: 12
   },
   author: {
-    lineHeight: 26,
+    lineHeight: 32,
     marginLeft: 12
   }
 })
@@ -57,8 +58,9 @@ const avatarSrc = src => 'https://bbsstatic.wsloan.com/picfile/yhtx/' + src
 
 const imagesInit = src => {
   let images = src.split('|')
-  return images.map(image => {
+  return images.map((image, index) => {
     <Image
+      key={index}
       style={styles.img}
       source={{uri: `https://bbsstatic.wsloan.com/picfile/${image}`}}
     />
@@ -72,12 +74,19 @@ export default class Card extends Component {
       <View
         style={styles.card}
       >
-        <Text style={styles.title}>{cBt}</Text>
-        <Text style={styles.text}>{cNr}</Text>
+        <Text
+          style={styles.title}
+          numberOfLines={1}
+        >{cBt}</Text>
+        <Text
+          style={styles.text}
+          numberOfLines={1}
+        >{cNr}</Text>
         {cSpic !== '' &&
           <View style={styles.row}>
-            {cSpic.split('|').map(src => 
+            {cSpic.split('|').map((src, index) => 
               <Image
+                key={index}
                 style={styles.img}
                 source={{uri: `https://bbsstatic.wsloan.com/picfile/${src}`}}
               />
