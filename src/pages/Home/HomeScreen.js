@@ -14,35 +14,58 @@ export default class HomeScreen extends Component {
   constructor (props) {
     super(props)
     this.state = {
-      items: [],
+      banners: [],
       isRefreshing: false,
-      bannerShow: false
+      bannerShow: false,
+      lists: [],
+      page: 1,
+      maxPage: 1
     }
-    this.getInfo = this.getInfo.bind(this)
-    this.getInfo()
+    this.getBanner = this.getBanner.bind(this)
+    this.getArticles = this.getArticles.bind(this)
+    this.getBanner()
+    this.getArticles()
   }
 
   static navigationOptions = {
     title: '首页',
   };
 
-  getInfo () {
+  getArticles () {
+    return new Promise(resolve => {
+      fetch(`https://sq2.wsloan.com/api/bbsAPi.ashx?q=getpostslist&page=${this.state.page}&pagesize=10`)
+        .then(data => data.json())
+        .then(data => {
+          this.setState({
+            lists: data.content.list,
+            maxPage: data.content.pagecount
+          })
+          console.log(this.state.lists)
+          resolve()
+        })
+    })
+  }
+
+  getBanner () {
     return new Promise(resolve => {
       fetch('https://sq2.wsloan.com/api/bbsAPi.ashx?q=gethomedata')
         .then(data => data.json())
         .then(data => {
           this.setState({
-            items: data.content.Banners[0].ItemList,
+            banners: data.content.Banners[0].ItemList,
             bannerShow: true
           })
-          console.log(data.content.Banners[0].ItemList)
           resolve()
         })
     })
   }
 
   async onRefresh () {
-    await this.getInfo()
+    await this.getBanner()
+    // this.setState({
+    //   page: 1
+    // })
+    await this.getArticles()
     this.setState({
       isRefreshing: false
     })
@@ -50,7 +73,6 @@ export default class HomeScreen extends Component {
 
   render () {
     return (
-      
       <ScrollView
         refreshControl={
           <RefreshControl
@@ -60,13 +82,15 @@ export default class HomeScreen extends Component {
           />
         }
       >
-        {this.state.bannerShow && <Banner items={this.state.items}/>}
-        <View
-          style={{flexDirection: 'column'}}
-        >
-          {[1, 2, 3, 4, 5, 6].map(item => 
-            <Card key={item}></Card>
-          )}
+        <View>
+          {this.state.bannerShow && <Banner items={this.state.banners}/>}
+          <View
+            style={{flexDirection: 'column'}}
+          >
+            {this.state.lists.map(list => 
+              <Card list={list} key={list.id}></Card>
+            )}
+          </View>
         </View>
       </ScrollView>
     )
