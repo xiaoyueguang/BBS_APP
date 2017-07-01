@@ -28,7 +28,7 @@ export default class HomeScreen extends Component {
   }
 
   static navigationOptions = {
-    title: '首页',
+    title: '首页'
   };
 
   getArticles () {
@@ -40,7 +40,6 @@ export default class HomeScreen extends Component {
             lists: data.content.list,
             maxPage: data.content.pagecount
           })
-          console.log(this.state.lists)
           resolve()
         })
     })
@@ -72,6 +71,8 @@ export default class HomeScreen extends Component {
   }
 
   render () {
+    const {navigate} = this.props.navigation
+
     return (
       <ScrollView
         refreshControl={
@@ -88,7 +89,7 @@ export default class HomeScreen extends Component {
             style={{flexDirection: 'column'}}
           >
             {this.state.lists.map(list => 
-              <Card list={list} key={list.id}></Card>
+              <Card navigate={navigate} list={list} key={list.id}></Card>
             )}
           </View>
         </View>

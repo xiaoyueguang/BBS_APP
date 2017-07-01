@@ -3,7 +3,8 @@ import {
   Text,
   View,
   StyleSheet,
-  Image
+  Image,
+  TouchableOpacity
 } from 'react-native'
 
 import Dimensions from 'Dimensions'
@@ -69,40 +70,47 @@ const imagesInit = src => {
 
 export default class Card extends Component {
   render () {
-    let {cBt, cNr, cYhtx, cNichen, cSpic} = this.props.list
+    const {cBt, cNr, cYhtx, cNichen, cSpic, id} = this.props.list
+    const navigate = this.props.navigate
     return (
-      <View
-        style={styles.card}
+      <TouchableOpacity
+        onPress={() => {
+          navigate('Detail', {id})
+        }}
       >
-        <Text
-          style={styles.title}
-          numberOfLines={1}
-        >{cBt}</Text>
-        <Text
-          style={styles.text}
-          numberOfLines={1}
-        >{cNr}</Text>
-        {cSpic !== '' &&
-          <View style={styles.row}>
-            {cSpic.split('|').map((src, index) => 
-              <Image
-                key={index}
-                style={styles.img}
-                source={{uri: `https://bbsstatic.wsloan.com/picfile/${src}`}}
-              />
-            )}
+        <View
+          style={styles.card}
+        >
+          <Text
+            style={styles.title}
+            numberOfLines={1}
+          >{cBt}</Text>
+          <Text
+            style={styles.text}
+            numberOfLines={1}
+          >{cNr}</Text>
+          {cSpic !== '' &&
+            <View style={styles.row}>
+              {cSpic.split('|').map((src, index) => 
+                <Image
+                  key={index}
+                  style={styles.img}
+                  source={{uri: `https://bbsstatic.wsloan.com/picfile/${src}`}}
+                />
+              )}
+            </View>
+          }
+
+          <View style={[styles.row, styles.avatarRow]}>
+            <Image
+              style={styles.avatar}
+              source={{uri: avatarSrc(cYhtx)}}
+            />
+            <Text style={styles.author}>{cNichen}</Text>
           </View>
-        }
 
-        <View style={[styles.row, styles.avatarRow]}>
-          <Image
-            style={styles.avatar}
-            source={{uri: avatarSrc(cYhtx)}}
-          />
-          <Text style={styles.author}>{cNichen}</Text>
         </View>
-
-      </View>
+      </TouchableOpacity>
     )
   }
 }
