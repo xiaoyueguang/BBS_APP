@@ -28,14 +28,14 @@ export default class HomeScreen extends Component {
       bannerShow: false,
       lists: [],
       page: 1,
-      maxPage: 1
+      maxPage: 1,
+      loading: false
     }
     this.getBanner = this.getBanner.bind(this)
     this.getArticles = this.getArticles.bind(this)
     this.getBanner()
     this.getArticles()
 
-    this.isLoading = false
   }
 
   static navigationOptions = {
@@ -72,9 +72,8 @@ export default class HomeScreen extends Component {
 
   async onRefresh () {
     await this.getBanner()
-    // this.setState({
-    //   page: 1
-    // })
+    this.state.page = 1
+    this.state.lists = []
     await this.getArticles()
     this.setState({
       isRefreshing: false
@@ -82,9 +81,15 @@ export default class HomeScreen extends Component {
   }
 
   async loadMore () {
-    if (this.isLoading) return
+    if (this.state.loading) return
     this.state.page = this.state.page + 1
-    this.getArticles()
+    this.setState({
+      loading: true
+    })
+    await this.getArticles()
+    this.setState({
+      loading: false
+    })
   }
 
   render () {
@@ -113,7 +118,7 @@ export default class HomeScreen extends Component {
         <TouchableOpacity
           onPress={this.loadMore.bind(this)}
         >
-          <Text style={styles.load}>点击加载更多</Text>
+          <Text style={styles.load}>{this.state.loading ? '加载中...' : '点击加载更多'}</Text>
         </TouchableOpacity>
       </ScrollView>
     )
