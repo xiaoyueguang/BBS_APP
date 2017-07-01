@@ -9,7 +9,8 @@ import {
 
 const styles = StyleSheet.create({
   webview: {
-    backgroundColor:'#fff'
+    backgroundColor:'#fff',
+    flex: 1
   }
 })
 
@@ -45,13 +46,20 @@ export default class HomeScreen extends Component {
 
 
   render () {
+    let html = this.state.content.detail.cNr
+    html = html.replace('http:', 'https:')
+    html += `
+      <style>
+        img {max-width: 90%}
+      </style>
+    `
     return (
       <View style={{flex: 1}}>
         <WebView
           domStorageEnabled={true}
           style={styles.webview}
           source={{
-            html: this.state.content.detail.cNr
+            html
           }}
         />
       </View>
