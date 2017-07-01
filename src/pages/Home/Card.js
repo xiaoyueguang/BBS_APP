@@ -77,6 +77,7 @@ export default class Card extends Component {
         onPress={() => {
           navigate('Detail', {id})
         }}
+        activeOpacity={1}
       >
         <View
           style={styles.card}

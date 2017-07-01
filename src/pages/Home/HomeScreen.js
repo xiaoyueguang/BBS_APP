@@ -3,12 +3,21 @@ import {
   Text,
   View,
   ScrollView,
-  RefreshControl
+  RefreshControl,
+  TouchableOpacity,
+  StyleSheet
 } from 'react-native'
 
 import Banner from './Banner'
 import Card from './Card'
 
+const styles = StyleSheet.create({
+  load: {
+    textAlign: 'center',
+    paddingTop: 8,
+    paddingBottom: 8
+  }
+})
 
 export default class HomeScreen extends Component {
   constructor (props) {
@@ -25,6 +34,8 @@ export default class HomeScreen extends Component {
     this.getArticles = this.getArticles.bind(this)
     this.getBanner()
     this.getArticles()
+
+    this.isLoading = false
   }
 
   static navigationOptions = {
@@ -37,7 +48,7 @@ export default class HomeScreen extends Component {
         .then(data => data.json())
         .then(data => {
           this.setState({
-            lists: data.content.list,
+            lists: this.state.lists.concat(data.content.list),
             maxPage: data.content.pagecount
           })
           resolve()
@@ -70,6 +81,12 @@ export default class HomeScreen extends Component {
     })
   }
 
+  async loadMore () {
+    if (this.isLoading) return
+    this.state.page = this.state.page + 1
+    this.getArticles()
+  }
+
   render () {
     const {navigate} = this.props.navigation
 
@@ -93,6 +110,11 @@ export default class HomeScreen extends Component {
             )}
           </View>
         </View>
+        <TouchableOpacity
+          onPress={this.loadMore.bind(this)}
+        >
+          <Text style={styles.load}>点击加载更多</Text>
+        </TouchableOpacity>
       </ScrollView>
     )
   }
